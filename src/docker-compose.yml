@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+ messagebroker:
+    image: rabbitmq:management
+    container_name: messagebroker
+    hostname: rabbitmq-host
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - mydockernetwork
+
+
+networks:
+  mydockernetwork:
+    driver: bridge
