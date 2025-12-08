@@ -1,32 +1,31 @@
+using MassTransit;
+using SharedMessages.Messages;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddMassTransit( x => 
+{  
+    x.UsingRabbitMq((context,cfg) => {
+        cfg.Host("rabbitmq://localhost");   
+    });
+});
 
 // Add services to the container.
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-
-var summaries = new[]
+app.MapPost("/orders", async(OrderRequest order, IBus bus) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    var orderPlacedMessage = new OrderPlaced(order.orderId, order.quantity);
+    await bus.Publish(orderPlacedMessage);
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    return Results.Created($"/orders/{order.orderId}", orderPlacedMessage);
 });
+
+// Configure the HTTP request pipeline.
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+public record OrderRequest(Guid orderId, int quantity);
+
+
