@@ -11,7 +11,6 @@ builder.Services.AddMassTransit( x =>
 });
 
 // Add services to the container.
-
 var app = builder.Build();
 
 app.MapPost("/orders", async(OrderRequest order, IBus bus) =>
@@ -25,6 +24,7 @@ app.MapPost("/orders", async(OrderRequest order, IBus bus) =>
 // Configure the HTTP request pipeline.
 
 app.Run();
+
 
 public record OrderRequest(Guid orderId, int quantity);
 

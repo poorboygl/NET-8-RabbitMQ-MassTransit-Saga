@@ -3,3 +3,8 @@ git push origin +main
 
 ch02
 docker-compose up -d
+
+{
+    "orderId": "7871d4d9-aa11-4b98-a546-4d27ae77e023",
+    "quantity": 2
+}
