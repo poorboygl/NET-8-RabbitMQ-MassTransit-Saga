@@ -1,2 +1,5 @@
+git reset head^
+git push origin +main
+
 ch02
 docker-compose up -d
