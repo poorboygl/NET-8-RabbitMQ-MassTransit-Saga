@@ -12,7 +12,7 @@ builder.Services.AddMassTransit(x =>
         cfg.Message<OrderPlaced>(x => x.SetEntityName("order-placed-exchange"));
         cfg.Publish<OrderPlaced>(x =>
         {
-            x.ExchangeType = "direct";
+            x.ExchangeType = "fanout";
         });
 
     });

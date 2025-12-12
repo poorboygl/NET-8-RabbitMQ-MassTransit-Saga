@@ -19,8 +19,7 @@ builder.Services.AddMassTransit(x =>
 
             e.Bind("order-placed-exchange", x =>
             {
-                x.RoutingKey = "order.tracking";
-                x.ExchangeType = "direct";
+                x.ExchangeType = "fanout";
             });
 
         });
