@@ -13,14 +13,15 @@ builder.Services.AddMassTransit(x =>
     {
         cfg.Host("rabbitmq://localhost");
 
-        cfg.ReceiveEndpoint("tracking-order-queue", e =>
+        cfg.ReceiveEndpoint("tracking-order-placed", e =>
         {
             e.ConfigureConsumer<OrderPlacedConsumer>(context);
 
-            e.Bind("order-placed-exchange", x =>
+            e.Bind("order-topic-exchange", x =>
             {
-                x.ExchangeType = "fanout";
-            });
+                x.RoutingKey = "order.#";
+                x.ExchangeType = "topic";
+            }); ;
 
         });
 
