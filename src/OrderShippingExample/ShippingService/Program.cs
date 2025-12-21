@@ -18,11 +18,11 @@ builder.Services.AddMassTransit(x =>
 
             e.Bind("order-placed-exchange", x =>
             {
-
                 x.ExchangeType = "direct";
                 x.RoutingKey = "order.created";
             });
 
+            e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
         });
     });
 });
