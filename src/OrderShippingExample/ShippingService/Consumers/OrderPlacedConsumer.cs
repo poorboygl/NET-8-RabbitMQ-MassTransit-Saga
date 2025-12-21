@@ -7,7 +7,13 @@ namespace ShippingService.Consumers
     {
         public Task Consume(ConsumeContext<OrderPlaced> context)
         {
-            Console.WriteLine($"Order received for shipping: {context.Message.OrderId}");
+            if(context.Message.Quantity <= 0)
+            {
+                Console.WriteLine($"Rejected order with ID: {context.Message.OrderId}");
+                throw new Exception("Invalid quantity, rejecting the message");
+            }
+
+            Console.WriteLine($"Processed order with ID: {context.Message.OrderId}");
             return Task.CompletedTask;
         }
     }
