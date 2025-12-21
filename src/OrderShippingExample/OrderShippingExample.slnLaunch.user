@@ -7,11 +7,11 @@
         "Action": "Start"
       },
       {
-        "Path": "ShippingService\\ShippingService.csproj",
+        "Path": "InventoryService\\InventoryService.csproj",
         "Action": "Start"
       },
       {
-        "Path": "TrackingService\\TrackingService.csproj",
+        "Path": "PaymentService\\PaymentService.csproj",
         "Action": "Start"
       }
     ]
