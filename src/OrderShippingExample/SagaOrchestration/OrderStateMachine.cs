@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using System;
 using static SharedMessages.Messages;
 
 namespace SagaOrchestration;
@@ -22,6 +23,32 @@ public class OrderStateMachine : MassTransitStateMachine<OrderState>
         Event(() => InventoryReservedEvent, x => x.CorrelateById(context => context.Message.OrderId));
 
         Event(() => PaymentCompletedEvent, x => x.CorrelateById(context => context.Message.OrderId));
+
+        Initially(
+            When(OrderPlacedEvent)
+                .Then( context =>
+                {
+                    context.Saga.OrderId = context.Message.OrderId;
+                    context.Saga.Quantity = context.Message.Quantity;
+                    Console.WriteLine($"Order {context.Saga.OrderId} placed successfully");
+                })
+                .TransitionTo(Submitted)
+        );
+
+        During(Submitted,
+            When(InventoryReservedEvent)
+            .TransitionTo(InventoryReserved)
+        );
+
+        During(InventoryReserved,
+            When(PaymentCompletedEvent)
+            .Then(context => Console.WriteLine($"Order {context.Saga.OrderId} completed successfully"))
+            .TransitionTo(PaymentCompleted)
+            .Finalize()
+        );
+
+        SetCompletedWhenFinalized();
+            
     }
 
 }
