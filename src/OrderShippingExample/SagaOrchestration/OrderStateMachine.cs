@@ -13,4 +13,15 @@ public class OrderStateMachine : MassTransitStateMachine<OrderState>
     public Event<InventoryReserved> InventoryReservedEvent { get; private set; }
     public Event<PaymentCompleted> PaymentCompletedEvent { get; private set; }
 
+    public OrderStateMachine()
+    {
+        InstanceState(x => x.CurrentState);
+
+        Event(() => OrderPlacedEvent, x => x.CorrelateById(context => context.Message.OrderId));
+
+        Event(() => InventoryReservedEvent, x => x.CorrelateById(context => context.Message.OrderId));
+
+        Event(() => PaymentCompletedEvent, x => x.CorrelateById(context => context.Message.OrderId));
+    }
+
 }
